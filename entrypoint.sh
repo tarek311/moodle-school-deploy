@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Fix moodledata permissions after volume mount
+mkdir -p /var/moodledata
+chown -R www-data:www-data /var/moodledata
+chmod 777 /var/moodledata
+
 # Generate config.php from environment variables on every startup
 php -r "
 \$c  = '<?php' . PHP_EOL;
