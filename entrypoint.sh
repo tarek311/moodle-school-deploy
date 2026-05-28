@@ -42,4 +42,4 @@ else
     echo "Moodle already installed, skipping installer."
 fi
 
-exec apache2-foreground
+exec /usr/sbin/apache2 -D FOREGROUND

@@ -1,13 +1,22 @@
-FROM php:8.2-apache
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
-    libzip-dev libxml2-dev libpq-dev libcurl4-openssl-dev \
-    libonig-dev libicu-dev libxslt1-dev \
-    unzip curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) \
-       gd zip xml pdo pdo_pgsql pgsql mbstring curl soap intl opcache exif \
+    apache2 \
+    php8.1 \
+    php8.1-pgsql \
+    php8.1-gd \
+    php8.1-curl \
+    php8.1-xml \
+    php8.1-mbstring \
+    php8.1-zip \
+    php8.1-intl \
+    php8.1-soap \
+    php8.1-opcache \
+    libapache2-mod-php8.1 \
+    curl unzip \
+    && a2enmod rewrite headers \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN curl -sL "https://download.moodle.org/download.php/direct/stable404/moodle-latest-404.tgz" \
@@ -21,12 +30,10 @@ RUN printf '<VirtualHost *:80>\n\
     AllowOverride All\n\
     Require all granted\n\
   </Directory>\n\
-</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf \
-    && rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf \
-    && a2enmod mpm_prefork rewrite headers
+</VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf
 
 RUN printf "max_input_vars=5000\nupload_max_filesize=50M\npost_max_size=50M\nmemory_limit=256M\n" \
-    > /usr/local/etc/php/conf.d/moodle.ini
+    > /etc/php/8.1/apache2/conf.d/moodle.ini
 
 RUN mkdir -p /var/moodledata && chown -R www-data:www-data /var/moodledata
 
