@@ -42,4 +42,5 @@ else
     echo "Moodle already installed, skipping installer."
 fi
 
+source /etc/apache2/envvars
 exec /usr/sbin/apache2 -D FOREGROUND
