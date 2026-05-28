@@ -22,7 +22,7 @@ RUN printf '<VirtualHost *:80>\n\
     Require all granted\n\
   </Directory>\n\
 </VirtualHost>\n' > /etc/apache2/sites-available/000-default.conf \
-    && a2enmod rewrite headers
+    && a2dismod mpm_event && a2enmod mpm_prefork rewrite headers
 
 RUN printf "max_input_vars=5000\nupload_max_filesize=50M\npost_max_size=50M\nmemory_limit=256M\n" \
     > /usr/local/etc/php/conf.d/moodle.ini
